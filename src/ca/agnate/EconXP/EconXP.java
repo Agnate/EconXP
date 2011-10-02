@@ -16,9 +16,9 @@ import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event;
 
 public class EconXP extends JavaPlugin {
+    
     protected List<Node> permissionOPs;
     protected Config config;
-    
     
     public void onDisable() {
         // Save config.

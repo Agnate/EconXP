@@ -1,0 +1,8 @@
+author: Agnate
+database: false
+description: EconomyXP uses Experience as an Economy system.
+generator: http://dinnerbone.com/minecraft/tools/pluginator/
+main: ca.agnate.EconXP
+name: EconXP
+startup: postworld
+version: 0.1.0

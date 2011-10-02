@@ -119,7 +119,7 @@ public class EconXPCommands implements CommandExecutor {
             plugin.sendMsg( sender, Msg.PLAYER_BALANCE.get(target.getName(), ""+plugin.getExp(target)) );
             return true;
         }
-     // Command: /econxp clear <player>
+        // Command: /econxp clear <player>
         else if ( cmd.equals(Node.CLEAR) ) {
             // Get the target player.
             Player target = validatePlayer(sender, arg1 );
@@ -127,6 +127,12 @@ public class EconXPCommands implements CommandExecutor {
             
             // Report back how much was cleared.
             plugin.sendMsg( sender, Msg.PLAYER_CLEAR.get(target.getName(), ""+plugin.clearExp(target)) );
+            return true;
+        }
+        // Command: /econxp version
+        else if ( cmd.equals(Node.VERSION) ) {
+            // Report back the version number.
+            plugin.sendMsg( sender, "Version #"+plugin.getDescription().getVersion() );
             return true;
         }
         

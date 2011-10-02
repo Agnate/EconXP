@@ -4,7 +4,8 @@ public enum Node {
     ADD ("add"),
     SUBTRACT ("subtract"),
     BALANCE ("balance"),
-    CLEAR ("clear");
+    CLEAR ("clear"),
+    VERSION ("version");
 
     private String perm;
     private String prefix = "econxp.";
