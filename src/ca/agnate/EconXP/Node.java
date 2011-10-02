@@ -5,7 +5,8 @@ public enum Node {
     SUBTRACT ("subtract"),
     BALANCE ("balance"),
     CLEAR ("clear"),
-    VERSION ("version");
+    VERSION ("version"),
+    SET ("set");
 
     private String perm;
     private String prefix = "econxp.";

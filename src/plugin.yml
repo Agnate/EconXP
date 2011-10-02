@@ -2,7 +2,45 @@ author: Agnate
 database: false
 description: EconomyXP uses Experience as an Economy system.
 generator: http://dinnerbone.com/minecraft/tools/pluginator/
-main: ca.agnate.EconXP
+main: ca.agnate.EconXP.EconXP
 name: EconXP
 startup: postworld
 version: 0.1.0
+commands:
+    econxp:
+        description: Base command for EconXP
+        usage: |
+            /econxp add       - Add experience to a player.
+            /econxp subtract  - Subtract experience from a player.
+            /econxp set       - Set experience of a player.
+            /econxp clear     - Clear a player's experience.
+            /econxp balance   - See a player's current experience.
+            /econxp version   - See the version of EconXP.
+    exp:
+        description: Base command for EconXP
+        usage: |
+            /exp add          - Add experience to a player.
+            /exp subtract     - Subtract experience from a player.
+            /exp set       - Set experience of a player.
+            /exp clear        - Clear a player's experience.
+            /exp balance      - See a player's current experience.
+            /exp version      - See the version of EconXP.
+permissions:
+    econxp.add:
+        description: Allows user to add experience to player.
+        default: op
+    econxp.subtract:
+        description: Allows user to remove experience from a player.
+        default: op
+    econxp.set:
+        description: Allows user to set experience of a player.
+        default: op
+    econxp.clear:
+        description: Allows user to clear experience of a player.
+        default: op
+    econxp.balance:
+        description: Allows user to check current experience of a player or themselves.
+        default: true
+    econxp.version:
+        description: Check the version of EconXP.
+        default: op

@@ -1,19 +1,14 @@
 package ca.agnate.EconXP;
 
-import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityListener;
-import org.bukkit.event.player.PlayerListener;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.config.Configuration;
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Event;
 
 public class EconXP extends JavaPlugin {
     
@@ -30,6 +25,7 @@ public class EconXP extends JavaPlugin {
 
     public void onEnable() {
         // Add in permission node checks for OPs.
+    	permissionOPs = new LinkedList<Node>();
         permissionOPs.add( Node.ADD );
         permissionOPs.add( Node.SUBTRACT );
         permissionOPs.add( Node.BALANCE );
@@ -62,7 +58,7 @@ public class EconXP extends JavaPlugin {
         if ( p == null ) { return -1; }
         
         // Set the experience.
-        p.setExperience( value );
+        p.setTotalExperience( value );
         
         // Return the value.
         return value;

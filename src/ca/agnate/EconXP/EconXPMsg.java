@@ -8,6 +8,9 @@ public class EconXPMsg {
         PLAYER_NOT_EXISTS ("Player '%' does not exist.", "Player '%' does not exist."),
         PLAYER_BALANCE ("% balance is @ exp.", "% balance is @ exp."),
         PLAYER_CLEAR ("% was cleared of @ exp.", "% was cleared of @ exp."),
+        PLAYER_ADD ("% was given @ exp.", "% was given @ exp."),
+        PLAYER_SUBTRACT ("% has lost @ exp.", "% has lost @ exp."),
+        PLAYER_SET ("% was set to @ exp.", "% was set to @ exp."),
         AMOUNT_NOT_GIVEN ("You did not pick an amount.", "Pick an amount."),
         AMOUNT_INVALID ("The amount is invalid.", "The amount is invalid.");
         

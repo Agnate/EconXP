@@ -17,16 +17,21 @@ public class EconXPCommands implements CommandExecutor {
     public static final List<String> COMMANDS = new LinkedList<String>();
     
     static {
-        COMMANDS.add("add");                 // ADD
+        COMMANDS.add(Node.ADD.toString());
+        COMMANDS.add(Node.SUBTRACT.toString());
+        COMMANDS.add(Node.CLEAR.toString());
+        COMMANDS.add(Node.BALANCE.toString());
+        COMMANDS.add(Node.VERSION.toString());
+        COMMANDS.add(Node.SET.toString());
     }
     
     private boolean meanAdmins;
     private Server server;
     private EconXP plugin;
     
-    public EconXPCommands (EconXP plugin) {
-        this.plugin = plugin;
-        server = Bukkit.getServer();
+    public EconXPCommands (EconXP aPlugin) {
+        plugin = aPlugin;
+        server = plugin.getServer();
         meanAdmins = (server.getPluginManager().getPlugin("Mean Admins") != null);
     }
     
@@ -68,6 +73,18 @@ public class EconXPCommands implements CommandExecutor {
         else if ( contains(base, Node.SUBTRACT.toString()) ) {
             cmd = Node.SUBTRACT;
         }
+        else if ( contains(base, Node.CLEAR.toString()) ) {
+            cmd = Node.CLEAR;
+        }
+        else if ( contains(base, Node.BALANCE.toString()) ) {
+            cmd = Node.BALANCE;
+        }
+        else if ( contains(base, Node.VERSION.toString()) ) {
+            cmd = Node.VERSION;
+        }
+        else if ( contains(base, Node.SET.toString()) ) {
+            cmd = Node.SET;
+        }
         
         // If no command is found,
         if ( cmd == null ) {
@@ -92,7 +109,7 @@ public class EconXPCommands implements CommandExecutor {
             if ( amount < 0 ) { return true; }
             
             // Add the experience to the player.
-            plugin.addExp(target, amount);
+            plugin.sendMsg( sender, Msg.PLAYER_ADD.get(target.getName(), ""+plugin.addExp(target, amount)) );
             return true;
         }
         // Command: /econxp subtract <player> <amount>
@@ -106,9 +123,23 @@ public class EconXPCommands implements CommandExecutor {
             if ( amount < 0 ) { return true; }
             
             // Subtract the experience from the player.
-            plugin.removeExp(target, amount);
+            plugin.sendMsg( sender, Msg.PLAYER_SUBTRACT.get(target.getName(), ""+plugin.removeExp(target, amount)) );
             return true;
         }
+        else // Command:  /econxp set <player> <amount>
+            if ( cmd.equals(Node.SET) ) {
+                // Get the target player.
+                Player target = validatePlayer(sender, arg1 );
+                if ( target == null ) { return true; }
+                
+                // Get the amount.
+                int amount = validateAmount( sender, arg2 );
+                if ( amount < 0 ) { return true; }
+                
+                // Add the experience to the player.
+                plugin.sendMsg( sender, Msg.PLAYER_SET.get(target.getName(), ""+plugin.setExp(target, amount)) );
+                return true;
+            }
         // Command: /econxp balance <player>
         else if ( cmd.equals(Node.BALANCE) ) {
             // Get the target player.
