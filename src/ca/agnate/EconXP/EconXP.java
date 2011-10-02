@@ -3,8 +3,12 @@ package ca.agnate.EconXP;
 import java.io.File;
 import java.util.List;
 
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityListener;
+import org.bukkit.event.player.PlayerListener;
+import org.bukkit.permissions.Permissible;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
@@ -14,7 +18,8 @@ import org.bukkit.event.Event;
 public class EconXP extends JavaPlugin {
     protected List<Node> permissionOPs;
     protected Config config;
-
+    
+    
     public void onDisable() {
         // Save config.
         config.saveData();
@@ -25,9 +30,9 @@ public class EconXP extends JavaPlugin {
 
     public void onEnable() {
         // Add in permission node checks for OPs.
-        permissionOPs.add( Node.GIVE );
-        permissionOPs.add( Node.TAKE );
-        permissionOPs.add( Node.VIEW );
+        permissionOPs.add( Node.ADD );
+        permissionOPs.add( Node.SUBTRACT );
+        permissionOPs.add( Node.BALANCE );
         permissionOPs.add( Node.CLEAR );
         
         // Setup config information.
@@ -35,24 +40,32 @@ public class EconXP extends JavaPlugin {
         
         // Set plugin defaults.
         
-
+        
         // Retrieve the config data.
         config.getData();
         
+        // Bind the /econxp, /exp commands to EconXPCommands.
+        EconXPCommands commandExecutor = new EconXPCommands (this);
+        getCommand("econxp").setExecutor(commandExecutor);
+        getCommand("exp").setExecutor(commandExecutor);
+        
         // Set up listeners
         PluginManager pm = getServer().getPluginManager();
-        //final EntityListener entityListener = new SBEntityListener(this);
-        //pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, Priority.Lowest, this);
+        //final PlayerListener playerListener = new EconXPPlayerListener(this);
+        //pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, playerListener, Priority.Lowest, this);
         
         // Show enabled message.
         System.out.println("[" + this + "] EconXP is enabled.");
     }
 
-    public static void setExp (Player p, int value) {
-        if ( p == null ) { return; }
+    public static int setExp (Player p, int value) {
+        if ( p == null ) { return -1; }
         
         // Set the experience.
         p.setExperience( value );
+        
+        // Return the value.
+        return value;
     }
     public static int getExp (Player p) {
        if ( p == null ) { return -1; }
@@ -113,17 +126,30 @@ public class EconXP extends JavaPlugin {
         // Return the exp they had.
         return exp;
     }
+    public static boolean hasExp (Player p, int value) {
+        return ( getExp(p) >= value );
+    }
     
-    public boolean has(Player p, Node n) {
+    public static boolean sendMsg(CommandSender p, String msg) {
+        // If the input sender is null or the string is empty, return.
+        if (p == null || msg.equals(""))
+            return false;
+        
+        // Otherwise, send the message with the [EconXP] tag.
+        p.sendMessage(ChatColor.AQUA + "[EconXP] " + ChatColor.WHITE + msg);
+        return true;
+    }
+    
+    public boolean has(Permissible p, Node n) {
         // return (permissionHandler == null || permissionHandler.has(p, s));
         // return hasSuperPerms(p, s);
         return hasSuperPerms(p, n.toString()) || hasOPPerm(p, n);
     }
-    protected boolean hasOPPerm(Player p, Node node) {
+    protected boolean hasOPPerm(Permissible p, Node node) {
         // If the node requires OP status, and the player has OP, then true.
         return (permissionOPs == null || permissionOPs.contains(node) == false || p.isOp());
     }
-    protected boolean hasSuperPerms(Player p, String s) {
+    protected boolean hasSuperPerms(Permissible p, String s) {
         String[] nodes = s.split("\\.");
 
         String perm = "";

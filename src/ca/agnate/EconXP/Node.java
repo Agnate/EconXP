@@ -1,9 +1,9 @@
 package ca.agnate.EconXP;
 
 public enum Node {
-    GIVE ("give"),
-    TAKE ("take"),
-    VIEW ("view"),
+    ADD ("add"),
+    SUBTRACT ("subtract"),
+    BALANCE ("balance"),
     CLEAR ("clear");
 
     private String perm;
