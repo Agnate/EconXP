@@ -59,7 +59,7 @@ permissions:
         default: op
     econxp.give:
         description: Give a player some of your experience.
-        default: true
+        default: op
     econxp.transfer:
         description: Transfer experience from one player to another.
         default: op
