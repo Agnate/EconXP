@@ -99,18 +99,56 @@ public class EconXP extends JavaPlugin {
         int exp = getExp(p);
         
         // If it is less than 0 (ie. -1), it means there was a problem.
-        if ( exp < 0 ) { return exp; }
+        if ( exp < 0 ) { return 0; }
+        
+        // Check the value.
+        if ( value < 0 ) { return 0; }
         
         // Add in the experience.
-        exp += value;
+        setExp(p, exp + value);
         
-        // If it's higher than zero, set the exp.
-        if ( exp >= 0 ) {
-            setExp(p, exp);
-        }
+        // Return the value added.
+        return value;
+    }
+    public static int multiplyExp (Player p, float multiplier) {
+    	// If player doesn't exist, value can't be multiplied.
+    	if ( !(p instanceof Player) ) {
+    		return 0;
+    	}
+    	
+    	// If the multiplier is negative, cancel transaction.
+    	if ( multiplier < 0 ) {
+    		return 0;
+    	}
+    	
+    	// Get player's current exp.
+        int exp = getExp(p);
         
-        // Return the total exp now.
-        return exp;
+        // If something is wrong with the exp, cancel.
+        if ( exp < 0 ) { return 0; }
+    	
+    	// Multiply the exp by the multiplier, add it to the player's exp, and return the value.
+    	return setExp( p, Math.round(exp * multiplier) );
+    }
+    public static int divideExp (Player p, float divisor) {
+    	// If player doesn't exist, value can't be multiplied.
+    	if ( !(p instanceof Player) ) {
+    		return 0;
+    	}
+    	
+    	// If the divisor is negative, cancel transaction.
+    	if ( divisor < 0 ) {
+    		return 0;
+    	}
+    	
+    	// Get player's current exp.
+        int exp = getExp(p);
+        
+        // If something is wrong with the exp, cancel.
+        if ( exp < 0 ) { return 0; }
+    	
+    	// Divide the exp by the divisor, add it to the player's exp, and return the value.
+    	return setExp( p, Math.round(exp / divisor) );
     }
     public static int clearExp (Player p) {
         // Get player's current exp.
@@ -124,6 +162,26 @@ public class EconXP extends JavaPlugin {
     }
     public static boolean hasExp (Player p, int value) {
         return ( getExp(p) >= value );
+    }
+    
+    public static int giveExp (Player giver, Player receiver, int value) {
+    	// If one of the players doesn't exist, no transaction was made.
+    	if ( !(giver instanceof Player)  ||  !(receiver instanceof Player) ) {
+    		return 0;
+    	}
+    	
+    	// If the value is negative, cancel transaction.
+    	if ( value < 0 ) {
+    		return 0;
+    	}
+    	
+    	// If  the giver can't afford it, cancel transaction.
+    	if ( hasExp(giver, value) == false ) {
+    		return 0;
+    	}
+    	
+    	// Remove exp from giver and add it to receiver, and return how much was given.
+    	return addExp( receiver, removeExp(giver, value) );
     }
     
     public static boolean sendMsg(CommandSender p, String msg) {

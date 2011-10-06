@@ -10,21 +10,31 @@ commands:
     econxp:
         description: Base command for EconXP
         usage: |
-            /econxp add       - Add experience to a player.
-            /econxp subtract  - Subtract experience from a player.
-            /econxp set       - Set experience of a player.
-            /econxp clear     - Clear a player's experience.
-            /econxp balance   - See a player's current experience.
-            /econxp version   - See the version of EconXP.
+            /econxp add        - Add experience to a player.
+            /econxp subtract   - Subtract experience from a player.
+            /econxp set        - Set experience of a player.
+            /econxp clear      - Clear a player's experience.
+            /econxp balance    - See a player's current experience.
+            /econxp balanceself- See your current experience.
+            /econxp version    - See the version of EconXP.
+            /econxp give       - Give a player some of your exp.
+            /econxp transfer   - Transfer exp from one player to another.
+            /econxp multiply   - Multiply a player's exp by a multiplier.
+            /econxp divide     - Divide a player's exp by a divisor.
     exp:
         description: Base command for EconXP
         usage: |
-            /exp add          - Add experience to a player.
-            /exp subtract     - Subtract experience from a player.
-            /exp set       - Set experience of a player.
-            /exp clear        - Clear a player's experience.
-            /exp balance      - See a player's current experience.
-            /exp version      - See the version of EconXP.
+            /exp add           - Add experience to a player.
+            /exp subtract      - Subtract experience from a player.
+            /exp set           - Set experience of a player.
+            /exp clear         - Clear a player's experience.
+            /exp balance       - See a player's current experience.
+            /exp balanceself   - See your current experience.
+            /exp version       - See the version of EconXP.
+            /exp give          - Give a player some of your exp.
+            /exp transfer      - Transfer exp from one player to another.
+            /exp multiply      - Multiply a player's exp by a multiplier.
+            /exp divide        - Divide a player's exp by a divisor.
 permissions:
     econxp.add:
         description: Allows user to add experience to player.
@@ -40,7 +50,22 @@ permissions:
         default: op
     econxp.balance:
         description: Allows user to check current experience of a player or themselves.
+        default: op
+    econxp.balanceself:
+        description: Allows user to check their current experience.
         default: true
     econxp.version:
         description: Check the version of EconXP.
+        default: op
+    econxp.give:
+        description: Give a player some of your experience.
+        default: true
+    econxp.transfer:
+        description: Transfer experience from one player to another.
+        default: op
+    econxp.multiply:
+        description: Multiply a player's experience by a multiplier.
+        default: op
+    econxp.divide:
+        description: Divide a player's experience by a divisor.
         default: op
