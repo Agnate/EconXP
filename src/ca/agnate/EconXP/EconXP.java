@@ -4,16 +4,20 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import org.jnbt.*;
+
 public class EconXP extends JavaPlugin {
     
     protected List<Node> permissionOPs;
     protected Config config;
+    public OfflineManager offline;
     
     public void onDisable() {
         // Save config.
@@ -35,7 +39,7 @@ public class EconXP extends JavaPlugin {
         config = new Config (this, "config.yml");
         
         // Set plugin defaults.
-        
+        offline = new OfflineManager (this);
         
         // Retrieve the config data.
         config.getData();
@@ -53,9 +57,24 @@ public class EconXP extends JavaPlugin {
         // Show enabled message.
         System.out.println("[" + this + "] EconXP is enabled.");
     }
-
-    public static int setExp (Player p, int value) {
-        if ( p == null ) { return -1; }
+    
+    public int setExp (OfflinePlayer p, int value) {
+    	if ( p == null ) { return -1; }
+    	
+    	// If this is actually an online player,
+    	if ( p instanceof Player ) {
+    		return setExp( (Player) p, value );
+    	}
+    	
+    	// Set the offline balance.
+    	if ( offline.setBalance( p.getName(), value ) ) {
+    		return value;
+    	}
+    	
+    	return -1;
+    }
+    public int setExp (Player p, int value) {
+    	if ( p == null ) { return -1; }
         
         // Set the experience.
         p.setTotalExperience( value );
@@ -63,13 +82,28 @@ public class EconXP extends JavaPlugin {
         // Return the value.
         return value;
     }
-    public static int getExp (Player p) {
+    
+    public int getExp (OfflinePlayer p) {
+    	if ( p == null ) { return -1; }
+    	
+    	// If this is actually a player,
+    	if ( p instanceof Player ) {
+    		return getExp( (Player) p );
+    	}
+    	
+    	return offline.getBalance( p.getName() );
+    }
+    public int getExp (Player p) {
        if ( p == null ) { return -1; }
        
        return p.getTotalExperience(); 
     }
-    public static int removeExp (Player p, int value) {
-        int remain = getExp(p);
+    
+    public int removeExp (Player p, int value) {
+    	return removeExp( (OfflinePlayer) p, value );
+    }
+    public int removeExp (OfflinePlayer p, int value) {
+    	int remain = getExp(p);
         
         // Remove the exp from the player.
         if ( remain >= 0 ) {
@@ -95,7 +129,11 @@ public class EconXP extends JavaPlugin {
         // Return the amount that was removed.
         return remain;
     }
-    public static int addExp (Player p, int value) {
+    
+    public int addExp (Player p, int value) {
+    	return addExp( (OfflinePlayer) p, value );
+    }
+    public int addExp (OfflinePlayer p, int value) {
         int exp = getExp(p);
         
         // If it is less than 0 (ie. -1), it means there was a problem.
@@ -110,9 +148,13 @@ public class EconXP extends JavaPlugin {
         // Return the value added.
         return value;
     }
-    public static int multiplyExp (Player p, float multiplier) {
+    
+    public int multiplyExp (Player p, float multiplier) {
+    	return multiplyExp( (OfflinePlayer) p, multiplier );
+    }
+    public int multiplyExp (OfflinePlayer p, float multiplier) {
     	// If player doesn't exist, value can't be multiplied.
-    	if ( !(p instanceof Player) ) {
+    	if ( p == null ) {
     		return 0;
     	}
     	
@@ -127,12 +169,16 @@ public class EconXP extends JavaPlugin {
         // If something is wrong with the exp, cancel.
         if ( exp < 0 ) { return 0; }
     	
-    	// Multiply the exp by the multiplier, add it to the player's exp, and return the value.
+        // Multiply the exp by the multiplier, add it to the player's exp, and return the value.
     	return setExp( p, Math.round(exp * multiplier) );
     }
-    public static int divideExp (Player p, float divisor) {
+    
+    public int divideExp (Player p, float divisor) {
+    	return divideExp( (OfflinePlayer) p, divisor );
+    }
+    public int divideExp (OfflinePlayer p, float divisor) {
     	// If player doesn't exist, value can't be multiplied.
-    	if ( !(p instanceof Player) ) {
+    	if ( p == null ) {
     		return 0;
     	}
     	
@@ -150,7 +196,11 @@ public class EconXP extends JavaPlugin {
     	// Divide the exp by the divisor, add it to the player's exp, and return the value.
     	return setExp( p, Math.round(exp / divisor) );
     }
-    public static int clearExp (Player p) {
+    
+    public int clearExp (Player p) {
+    	return clearExp( (OfflinePlayer) p );
+    }
+    public int clearExp (OfflinePlayer p) {
         // Get player's current exp.
         int exp = getExp(p);
         
@@ -160,13 +210,26 @@ public class EconXP extends JavaPlugin {
         // Return the exp they had.
         return exp;
     }
-    public static boolean hasExp (Player p, int value) {
+    
+    public boolean hasExp (Player p, int value) {
+    	return hasExp( (OfflinePlayer) p, value );
+    }
+    public boolean hasExp (OfflinePlayer p, int value) {
         return ( getExp(p) >= value );
     }
     
-    public static int giveExp (Player giver, Player receiver, int value) {
+    public int giveExp (Player giver, Player receiver, int value) {
+    	return giveExp( (OfflinePlayer) giver, (OfflinePlayer) receiver, value );
+    }
+    public int giveExp (OfflinePlayer giver, Player receiver, int value) {
+    	return giveExp( giver, (OfflinePlayer) receiver, value );
+    }
+    public int giveExp (Player giver, OfflinePlayer receiver, int value) {
+    	return giveExp( (OfflinePlayer) giver, receiver, value );
+    }
+    public int giveExp (OfflinePlayer giver, OfflinePlayer receiver, int value) {
     	// If one of the players doesn't exist, no transaction was made.
-    	if ( !(giver instanceof Player)  ||  !(receiver instanceof Player) ) {
+    	if ( giver == null  ||  receiver == null ) {
     		return 0;
     	}
     	
@@ -186,10 +249,17 @@ public class EconXP extends JavaPlugin {
     
     public static boolean sendMsg(CommandSender p, String msg) {
         // If the input sender is null or the string is empty, return.
-        if (p == null || msg.equals(""))
+    	if (msg.equals("")) {
             return false;
+    	}
         
-        // Otherwise, send the message with the [EconXP] tag.
+    	// If no sender is given, just use the System.out.
+    	if (p == null) {
+    		System.out.println( "[EconXP] " + msg );
+    		return true;
+    	}
+    	
+        // Send the message to the assigned sender.
         p.sendMessage(ChatColor.AQUA + "[EconXP] " + ChatColor.WHITE + msg);
         return true;
     }

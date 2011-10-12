@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -67,7 +68,7 @@ public class EconXPCommands implements CommandExecutor {
         
         
        // Check for self-balance based on permissions.
-        if ( cmd.equals(Node.BALANCE)  &&  plugin.has(sender, cmd) == false  &&  (arg1.isEmpty()  ||  arg1.toLowerCase().equals(sender.getName().toLowerCase())) ) {
+        if ( cmd.equals(Node.BALANCE)  &&  (arg1.isEmpty()  ||  arg1.toLowerCase().equals(sender.getName().toLowerCase())) ) {
         	// If they can't access the balance of others, check themselves.
         	cmd = Node.BALANCESELF;
         }
@@ -81,7 +82,7 @@ public class EconXPCommands implements CommandExecutor {
         // Command:  /econxp add <player> <amount>
         if ( cmd.equals(Node.ADD) ) {
             // Get the target player.
-            Player target = validatePlayer(sender, arg1 );
+        	OfflinePlayer target = validatePlayer(sender, arg1 );
             if ( target == null ) { return true; }
             
             // Get the amount.
@@ -95,7 +96,7 @@ public class EconXPCommands implements CommandExecutor {
         // Command: /econxp subtract <player> <amount>
         else if ( cmd.equals(Node.SUBTRACT) ) {
             // Get the target player.
-            Player target = validatePlayer(sender, arg1 );
+        	OfflinePlayer target = validatePlayer(sender, arg1 );
             if ( target == null ) { return true; }
             
             // Get the amount.
@@ -109,7 +110,7 @@ public class EconXPCommands implements CommandExecutor {
         // Command:  /econxp set <player> <amount>
         else if ( cmd.equals(Node.SET) ) {
             // Get the target player.
-            Player target = validatePlayer(sender, arg1 );
+        	OfflinePlayer target = validatePlayer(sender, arg1 );
             if ( target == null ) { return true; }
             
             // Get the amount.
@@ -123,8 +124,9 @@ public class EconXPCommands implements CommandExecutor {
         // Command: /econxp balance <player>
         else if ( cmd.equals(Node.BALANCE) ) {
             // Get the target player.
-            Player target = validatePlayer(sender, arg1 );
-            if ( target == null ) { return true; }
+        	OfflinePlayer target = validatePlayer( sender, arg1 );
+            
+        	if ( target == null ) { return true; }
             
             // Report back the player's balance.
             plugin.sendMsg( sender, Msg.PLAYER_BALANCE.get(target.getName(), ""+plugin.getExp(target)) );
@@ -138,14 +140,14 @@ public class EconXPCommands implements CommandExecutor {
         		return true;
         	}
         	
-            // Report back the player's balance.
+        	// Report back the player's balance.
             plugin.sendMsg( sender, Msg.PLAYER_BALANCESELF.get(sender.getName(), ""+plugin.getExp((Player)sender)) );
             return true;
         }
         // Command: /econxp clear <player>
         else if ( cmd.equals(Node.CLEAR) ) {
             // Get the target player.
-            Player target = validatePlayer(sender, arg1 );
+        	OfflinePlayer target = validatePlayer(sender, arg1 );
             if ( target == null ) { return true; }
             
             // Report back how much was cleared.
@@ -167,7 +169,7 @@ public class EconXPCommands implements CommandExecutor {
         	}
         	
             // Get the receiving player.
-            Player target = validatePlayer(sender, arg1 );
+        	OfflinePlayer target = validatePlayer(sender, arg1 );
             if ( target == null ) { return true; }
             
             // Get the amount.
@@ -181,7 +183,7 @@ public class EconXPCommands implements CommandExecutor {
         // Command: /econxp transfer <giver> <amount> <receiver>
         else if ( cmd.equals(Node.TRANSFER) ) {
         	// Get the giving player.
-            Player giver = validatePlayer(sender, arg1 );
+            OfflinePlayer giver = validatePlayer(sender, arg1 );
             if ( giver == null ) { return true; }
             
             // Get the amount.
@@ -189,7 +191,7 @@ public class EconXPCommands implements CommandExecutor {
             if ( amount < 0 ) { return true; }
             
             // Get the receiving player.
-            Player receiver = validatePlayer(sender, arg3 );
+            OfflinePlayer receiver = validatePlayer(sender, arg3 );
             if ( receiver == null ) { return true; }
             
             // Transfer the experience from the player to the receiver.
@@ -199,7 +201,7 @@ public class EconXPCommands implements CommandExecutor {
         // Command: /econxp multiply <player> <multiplier>
         else if ( cmd.equals(Node.MULTIPLY) ) {
             // Get the target player.
-            Player target = validatePlayer(sender, arg1 );
+        	OfflinePlayer target = validatePlayer(sender, arg1 );
             if ( target == null ) { return true; }
             
             // Get the multiplier.
@@ -213,7 +215,7 @@ public class EconXPCommands implements CommandExecutor {
         // Command: /econxp divide <player> <divisor>
         else if ( cmd.equals(Node.DIVIDE) ) {
             // Get the target player.
-            Player target = validatePlayer(sender, arg1 );
+        	OfflinePlayer target = validatePlayer(sender, arg1 );
             if ( target == null ) { return true; }
             
             // Get the divisor.
@@ -241,7 +243,7 @@ public class EconXPCommands implements CommandExecutor {
     	
     	return null;
     }
-    private Player validatePlayer (CommandSender sender, String player) {
+    private OfflinePlayer validatePlayer (CommandSender sender, String player) {
         // If not player name was given,
         if ( player.isEmpty() ) {
             plugin.sendMsg(sender, Msg.PLAYER_NOT_GIVEN.get());
@@ -249,15 +251,21 @@ public class EconXPCommands implements CommandExecutor {
         }
         
         // Get the target player.
-        Player target = getPlayer( player );
+        Player target = getOnlinePlayer( player );
         
-        // If there's no target,
-        if ( target == null ) {
-            plugin.sendMsg(sender, Msg.PLAYER_NOT_EXISTS.get(player));
-            return null;
+        // If there's a target,
+        if ( target != null ) {
+        	return target;
         }
         
-        return target;
+        OfflinePlayer offTarget = getOfflinePlayer( player );
+        
+        if ( offTarget != null ) {
+        	return offTarget;
+        }
+        
+        plugin.sendMsg(sender, Msg.PLAYER_NOT_EXISTS.get(player));
+        return null;
     }
     private int validateAmount (CommandSender sender, String value) {
         // If no amount was given,
@@ -301,7 +309,10 @@ public class EconXPCommands implements CommandExecutor {
     private boolean contains (String str, String command) {
         return command.toLowerCase().contains(str.toLowerCase());
     }
-    private Player getPlayer (String name) {
+    private Player getOnlinePlayer (String name) {
         return server.getPlayer(name);
+    }
+    private OfflinePlayer getOfflinePlayer (String name) {
+        return server.getOfflinePlayer(name);
     }
 }
