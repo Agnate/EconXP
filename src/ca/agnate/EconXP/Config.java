@@ -36,15 +36,15 @@ public class Config {
 		}
     	catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
-			plugin.sendMsg( null, "The config file was not found while loading. Do I have write access?");
+			EconXP.sendMsg( null, "The config file was not found while loading. Do I have write access?");
 			return;
 		}
     	catch (IOException e) {
-			plugin.sendMsg( null, "The config file experienced an IOException while loading. Do I have write access?");
+			EconXP.sendMsg( null, "The config file experienced an IOException while loading. Do I have write access?");
 			return;
 		}
     	catch (InvalidConfigurationException e) {
-    		plugin.sendMsg( null, "Your config file was not correct when loading. Go to EconXP forum if you can't figure it out.");
+    		EconXP.sendMsg( null, "Your config file was not correct when loading. Go to EconXP forum if you can't figure it out.");
 			return;
 		}
         
@@ -57,7 +57,7 @@ public class Config {
         try {
 			config.save( file );
 		} catch (IOException e) {
-			plugin.sendMsg( null, "The config file experienced an IOException while saving after the load. Do I have write access?");
+			EconXP.sendMsg( null, "The config file experienced an IOException while saving after the load. Do I have write access?");
 			return;
 		}
     }
@@ -72,15 +72,15 @@ public class Config {
 		}
     	catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
-			plugin.sendMsg( null, "The config file was not found while saving. Do I have write access?");
+			EconXP.sendMsg( null, "The config file was not found while saving. Do I have write access?");
 			return;
 		}
     	catch (IOException e) {
-			plugin.sendMsg( null, "The config file experienced an IOException while saving. Do I have write access?");
+			EconXP.sendMsg( null, "The config file experienced an IOException while saving. Do I have write access?");
 			return;
 		}
     	catch (InvalidConfigurationException e) {
-    		plugin.sendMsg( null, "Your config file is not correct while saving. Go to EconXP and let them know there's a problem.");
+    		EconXP.sendMsg( null, "Your config file is not correct while saving. Go to EconXP and let them know there's a problem.");
 			return;
 		}
         
@@ -93,7 +93,7 @@ public class Config {
         try {
 			config.save( file );
 		} catch (IOException e) {
-			plugin.sendMsg( null, "The config file experienced an IOException on final save. Do I have write access?");
+			EconXP.sendMsg( null, "The config file experienced an IOException on final save. Do I have write access?");
 			return;
 		}
     }

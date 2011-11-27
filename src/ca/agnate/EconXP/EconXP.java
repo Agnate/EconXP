@@ -5,18 +5,17 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import org.jnbt.*;
 
 public class EconXP extends JavaPlugin {
     
     protected List<Node> permissionOPs;
     protected Config config;
+    protected Server server;
     public OfflineManager offline;
     
     public void onDisable() {
@@ -41,6 +40,9 @@ public class EconXP extends JavaPlugin {
         // Set plugin defaults.
         offline = new OfflineManager (this);
         
+        // Save server object.
+        server = getServer();
+        
         // Retrieve the config data.
         config.getData();
         
@@ -50,7 +52,7 @@ public class EconXP extends JavaPlugin {
         getCommand("exp").setExecutor(commandExecutor);
         
         // Set up listeners
-        PluginManager pm = getServer().getPluginManager();
+        //PluginManager pm = getServer().getPluginManager();
         //final PlayerListener playerListener = new EconXPPlayerListener(this);
         //pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, playerListener, Priority.Lowest, this);
         
@@ -78,7 +80,7 @@ public class EconXP extends JavaPlugin {
         
         // Set the experience.
         p.setTotalExperience( value );
-        
+    	
         // Return the value.
         return value;
     }
@@ -96,7 +98,7 @@ public class EconXP extends JavaPlugin {
     public int getExp (Player p) {
        if ( p == null ) { return -1; }
        
-       return p.getTotalExperience(); 
+       return p.getTotalExperience();
     }
     
     public int removeExp (Player p, int value) {
@@ -245,6 +247,48 @@ public class EconXP extends JavaPlugin {
     	
     	// Remove exp from giver and add it to receiver, and return how much was given.
     	return addExp( receiver, removeExp(giver, value) );
+    }
+    
+    public boolean isValidPlayer(String player) {
+    	// If player name was not given,
+        if ( player.isEmpty() ) {
+            return false;
+        }
+        
+        // If there's a player,
+        if ( getOnlinePlayer( player ) != null ) {
+        	return true;
+        }
+        
+        return ( getOfflinePlayer( player ) != null );
+    }
+    public OfflinePlayer getPlayer(String player) {
+    	// If not player name was given,
+        if ( player.isEmpty() ) {
+            return null;
+        }
+        
+        // Get the target player.
+        Player target = getOnlinePlayer( player );
+        
+        // If there's a target,
+        if ( target != null ) {
+        	return target;
+        }
+        
+        OfflinePlayer offTarget = getOfflinePlayer( player );
+        
+        if ( offTarget != null ) {
+        	return offTarget;
+        }
+        
+        return null;
+    }
+    protected Player getOnlinePlayer (String name) {
+        return server.getPlayer(name);
+    }
+    protected OfflinePlayer getOfflinePlayer (String name) {
+        return server.getOfflinePlayer(name);
     }
     
     public static boolean sendMsg(CommandSender p, String msg) {

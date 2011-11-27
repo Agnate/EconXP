@@ -1,9 +1,7 @@
 package ca.agnate.EconXP;
 
-import java.util.LinkedList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
@@ -49,17 +47,17 @@ public class EconXPCommands implements CommandExecutor {
         
         // If no command is found (ie. it's null),
         if ( cmd == null ) {
-            plugin.sendMsg(sender, Msg.COMMAND_NOT_FOUND.get());
+            EconXP.sendMsg(sender, Msg.COMMAND_NOT_FOUND.get());
             return false;
         }
         
         // Determine if the sender is a player (and an op), or the console.
-        boolean player  = (sender instanceof Player);
-        boolean op      = player && ((Player) sender).isOp();
+        //boolean player  = (sender instanceof Player);
+        //boolean op      = player && ((Player) sender).isOp();
         boolean console = (sender instanceof ConsoleCommandSender);
         
         // Cast the sender to Player if possible.
-        Player p = (player) ? (Player)sender : null;
+        //Player p = (player) ? (Player)sender : null;
         
         // Grab the command base and any arguments.
         String arg1 = (args.length > 1) ? args[1].toLowerCase() : "";
@@ -75,7 +73,7 @@ public class EconXPCommands implements CommandExecutor {
         
         // Verify that player has permission to use this.
         if ( plugin.has(sender, cmd) == false ) {
-            plugin.sendMsg(sender, Msg.COMMAND_NOT_ALLOWED.get(sender.getName()) );
+            EconXP.sendMsg(sender, Msg.COMMAND_NOT_ALLOWED.get(sender.getName()) );
             return true;
         }
         
@@ -90,7 +88,7 @@ public class EconXPCommands implements CommandExecutor {
             if ( amount < 0 ) { return true; }
             
             // Add the experience to the player.
-            plugin.sendMsg( sender, Msg.PLAYER_ADD.get(target.getName(), ""+plugin.addExp(target, amount)) );
+            EconXP.sendMsg( sender, Msg.PLAYER_ADD.get(target.getName(), ""+plugin.addExp(target, amount)) );
             return true;
         }
         // Command: /econxp subtract <player> <amount>
@@ -104,7 +102,7 @@ public class EconXPCommands implements CommandExecutor {
             if ( amount < 0 ) { return true; }
             
             // Subtract the experience from the player.
-            plugin.sendMsg( sender, Msg.PLAYER_SUBTRACT.get(target.getName(), ""+plugin.removeExp(target, amount)) );
+            EconXP.sendMsg( sender, Msg.PLAYER_SUBTRACT.get(target.getName(), ""+plugin.removeExp(target, amount)) );
             return true;
         }
         // Command:  /econxp set <player> <amount>
@@ -118,7 +116,7 @@ public class EconXPCommands implements CommandExecutor {
             if ( amount < 0 ) { return true; }
             
             // Add the experience to the player.
-            plugin.sendMsg( sender, Msg.PLAYER_SET.get(target.getName(), ""+plugin.setExp(target, amount)) );
+            EconXP.sendMsg( sender, Msg.PLAYER_SET.get(target.getName(), ""+plugin.setExp(target, amount)) );
             return true;
         }
         // Command: /econxp balance <player>
@@ -129,19 +127,19 @@ public class EconXPCommands implements CommandExecutor {
         	if ( target == null ) { return true; }
             
             // Report back the player's balance.
-            plugin.sendMsg( sender, Msg.PLAYER_BALANCE.get(target.getName(), ""+plugin.getExp(target)) );
+            EconXP.sendMsg( sender, Msg.PLAYER_BALANCE.get(target.getName(), ""+plugin.getExp(target)) );
             return true;
         }
         // Command: /econxp balanceself
         else if ( cmd.equals(Node.BALANCESELF) ) {
         	// If this is the console, error.
         	if ( console ) {
-        		plugin.sendMsg( sender, Msg.COMMAND_CONSOLE_BALANCESELF_NOT_ALLOWED.get() );
+        		EconXP.sendMsg( sender, Msg.COMMAND_CONSOLE_BALANCESELF_NOT_ALLOWED.get() );
         		return true;
         	}
         	
         	// Report back the player's balance.
-            plugin.sendMsg( sender, Msg.PLAYER_BALANCESELF.get(sender.getName(), ""+plugin.getExp((Player)sender)) );
+            EconXP.sendMsg( sender, Msg.PLAYER_BALANCESELF.get(sender.getName(), ""+plugin.getExp((Player)sender)) );
             return true;
         }
         // Command: /econxp clear <player>
@@ -151,20 +149,20 @@ public class EconXPCommands implements CommandExecutor {
             if ( target == null ) { return true; }
             
             // Report back how much was cleared.
-            plugin.sendMsg( sender, Msg.PLAYER_CLEAR.get(target.getName(), ""+plugin.clearExp(target)) );
+            EconXP.sendMsg( sender, Msg.PLAYER_CLEAR.get(target.getName(), ""+plugin.clearExp(target)) );
             return true;
         }
         // Command: /econxp version
         else if ( cmd.equals(Node.VERSION) ) {
             // Report back the version number.
-            plugin.sendMsg( sender, "Version #"+plugin.getDescription().getVersion() );
+            EconXP.sendMsg( sender, "Version #"+plugin.getDescription().getVersion() );
             return true;
         }
         // Command: /econxp give <receiver> <amount>
         else if ( cmd.equals(Node.GIVE) ) {
         	// If the console typed this, cancel it.
         	if ( console ) {
-        		plugin.sendMsg( sender, Msg.COMMAND_CONSOLE_GIVE_NOT_ALLOWED.get() );
+        		EconXP.sendMsg( sender, Msg.COMMAND_CONSOLE_GIVE_NOT_ALLOWED.get() );
         		return true;
         	}
         	
@@ -177,7 +175,7 @@ public class EconXPCommands implements CommandExecutor {
             if ( amount < 0 ) { return true; }
             
             // Transfer the experience from the player to the receiver.
-            plugin.sendMsg( sender, Msg.PLAYER_GIVE.get(target.getName(), ""+plugin.giveExp((Player) sender, target, amount)) );
+            EconXP.sendMsg( sender, Msg.PLAYER_GIVE.get(target.getName(), ""+plugin.giveExp((Player) sender, target, amount)) );
             return true;
         }
         // Command: /econxp transfer <giver> <amount> <receiver>
@@ -195,7 +193,7 @@ public class EconXPCommands implements CommandExecutor {
             if ( receiver == null ) { return true; }
             
             // Transfer the experience from the player to the receiver.
-            plugin.sendMsg( sender, Msg.PLAYER_TRANSFER.get(giver.getName(), ""+plugin.giveExp(giver, receiver, amount), receiver.getName()) );
+            EconXP.sendMsg( sender, Msg.PLAYER_TRANSFER.get(giver.getName(), ""+plugin.giveExp(giver, receiver, amount), receiver.getName()) );
             return true;
         }
         // Command: /econxp multiply <player> <multiplier>
@@ -209,7 +207,7 @@ public class EconXPCommands implements CommandExecutor {
             if ( multiplier < 0 ) { return true; }
             
             // Multiply the experience from the player.
-            plugin.sendMsg( sender, Msg.PLAYER_MULTIPLY.get(target.getName(), ""+multiplier, ""+plugin.multiplyExp(target, multiplier)) );
+            EconXP.sendMsg( sender, Msg.PLAYER_MULTIPLY.get(target.getName(), ""+multiplier, ""+plugin.multiplyExp(target, multiplier)) );
             return true;
         }
         // Command: /econxp divide <player> <divisor>
@@ -223,12 +221,12 @@ public class EconXPCommands implements CommandExecutor {
             if ( divisor < 0 ) { return true; }
             
             // Divide the experience from the player.
-            plugin.sendMsg( sender, Msg.PLAYER_DIVIDE.get(target.getName(), ""+divisor, ""+plugin.divideExp(target, divisor)) );
+            EconXP.sendMsg( sender, Msg.PLAYER_DIVIDE.get(target.getName(), ""+divisor, ""+plugin.divideExp(target, divisor)) );
             return true;
         }
         
         // Command wasn't handled.
-        plugin.sendMsg(sender, Msg.COMMAND_UNHANDLED.get(cmd.toString()));
+        EconXP.sendMsg(sender, Msg.COMMAND_UNHANDLED.get(cmd.toString()));
         return true;
     }
     
@@ -246,31 +244,31 @@ public class EconXPCommands implements CommandExecutor {
     private OfflinePlayer validatePlayer (CommandSender sender, String player) {
         // If not player name was given,
         if ( player.isEmpty() ) {
-            plugin.sendMsg(sender, Msg.PLAYER_NOT_GIVEN.get());
+            EconXP.sendMsg(sender, Msg.PLAYER_NOT_GIVEN.get());
             return null;
         }
         
         // Get the target player.
-        Player target = getOnlinePlayer( player );
+        Player target = plugin.getOnlinePlayer( player );
         
         // If there's a target,
         if ( target != null ) {
         	return target;
         }
         
-        OfflinePlayer offTarget = getOfflinePlayer( player );
+        OfflinePlayer offTarget = plugin.getOfflinePlayer( player );
         
         if ( offTarget != null ) {
         	return offTarget;
         }
         
-        plugin.sendMsg(sender, Msg.PLAYER_NOT_EXISTS.get(player));
+        EconXP.sendMsg(sender, Msg.PLAYER_NOT_EXISTS.get(player));
         return null;
     }
     private int validateAmount (CommandSender sender, String value) {
         // If no amount was given,
         if ( value.isEmpty() ) {
-            plugin.sendMsg(sender, Msg.AMOUNT_NOT_GIVEN.get());
+            EconXP.sendMsg(sender, Msg.AMOUNT_NOT_GIVEN.get());
             return -1;
         }
         
@@ -279,7 +277,7 @@ public class EconXPCommands implements CommandExecutor {
         
         // If the amount is <= zero,
         if ( amount <= 0 ) {
-            plugin.sendMsg(sender, Msg.AMOUNT_INVALID.get(value));
+            EconXP.sendMsg(sender, Msg.AMOUNT_INVALID.get(value));
             return -1;
         }
         
@@ -289,7 +287,7 @@ public class EconXPCommands implements CommandExecutor {
     private float validateFloatAmount (CommandSender sender, String value) {
         // If no amount was given,
         if ( value.isEmpty() ) {
-            plugin.sendMsg(sender, Msg.AMOUNT_NOT_GIVEN.get());
+            EconXP.sendMsg(sender, Msg.AMOUNT_NOT_GIVEN.get());
             return -1;
         }
         
@@ -298,7 +296,7 @@ public class EconXPCommands implements CommandExecutor {
         
         // If the amount is <= zero,
         if ( amount <= 0 ) {
-            plugin.sendMsg(sender, Msg.AMOUNT_INVALID.get(value));
+            EconXP.sendMsg(sender, Msg.AMOUNT_INVALID.get(value));
             return -1;
         }
         
@@ -308,11 +306,5 @@ public class EconXPCommands implements CommandExecutor {
     
     private boolean contains (String str, String command) {
         return command.toLowerCase().contains(str.toLowerCase());
-    }
-    private Player getOnlinePlayer (String name) {
-        return server.getPlayer(name);
-    }
-    private OfflinePlayer getOfflinePlayer (String name) {
-        return server.getOfflinePlayer(name);
     }
 }
