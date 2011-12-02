@@ -20,7 +20,7 @@ public class EconXP extends JavaPlugin {
     
     public void onDisable() {
         // Save config.
-        config.saveData();
+        //config.saveData();
         
         // Show disabled message.
         System.out.println("[" + this + "] EconXP is disabled.");
@@ -35,7 +35,7 @@ public class EconXP extends JavaPlugin {
         permissionOPs.add( Node.CLEAR );
         
         // Setup config information.
-        config = new Config (this, "config.yml");
+        //config = new Config (this, "config.yml");
         
         // Set plugin defaults.
         offline = new OfflineManager (this);
@@ -44,7 +44,7 @@ public class EconXP extends JavaPlugin {
         server = getServer();
         
         // Retrieve the config data.
-        config.getData();
+        //config.getData();
         
         // Bind the /econxp, /exp commands to EconXPCommands.
         EconXPCommands commandExecutor = new EconXPCommands (this);
@@ -78,10 +78,15 @@ public class EconXP extends JavaPlugin {
     public int setExp (Player p, int value) {
     	if ( p == null ) { return -1; }
         
-        // Set the experience.
-        p.setTotalExperience( value );
+    	// Lame hacks because of Bukkit bugs.
+    	p.setTotalExperience( 0 );
+    	p.setLevel( 0 );
+    	p.setExp( 0 );
     	
-        // Return the value.
+    	// Set the experience.
+        p.giveExp( value );
+    	
+    	// Return the value.
         return value;
     }
     
