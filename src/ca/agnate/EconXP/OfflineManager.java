@@ -77,17 +77,21 @@ public class OfflineManager {
             	value = 0;
             }
             
-            int expLevel = 0;
-            float curExp = (float) value / (float) (7 + (expLevel * 7 >> 1));
+            int level = 0;
+        	int total = value;
+        	int tnl = plugin.getExpTolevel(level);
+        	float exp = (float) total / (float) tnl;
             
-            while (curExp >= 1.0F) {
-                --curExp;
-                ++expLevel;
+            while (exp >= 1.0F) {
+                level++;
+                total -= tnl;
+                tnl = plugin.getExpTolevel(level);
+                exp = (float) total / (float) tnl;
             }
             
             // Create tags for new data here.
-            FloatTag newExpCur = new FloatTag("XpP", curExp);
-            IntTag newExpLevel = new IntTag("XpLevel", expLevel);
+            FloatTag newExpCur = new FloatTag("XpP", exp);
+            IntTag newExpLevel = new IntTag("XpLevel", level);
             IntTag newExp = new IntTag("XpTotal", value);
             
             HashMap<String, Tag> tagCompound = new HashMap<String, Tag>(tag.getValue());

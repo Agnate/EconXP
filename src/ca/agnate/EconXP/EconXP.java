@@ -79,15 +79,30 @@ public class EconXP extends JavaPlugin {
     	if ( p == null ) { return -1; }
         
     	// Lame hacks because of Bukkit bugs.
-    	p.setTotalExperience( 0 );
-    	p.setLevel( 0 );
-    	p.setExp( 0 );
+    	int level = 0;
+    	int total = value;
+    	int tnl = getExpTolevel(level);
+    	float exp = (float) total / (float) tnl;
+        
+        while (exp >= 1.0F) {
+            level++;
+            total -= tnl;
+            tnl = getExpTolevel(level);
+            exp = (float) total / (float) tnl;
+        }
+    	
+    	p.setTotalExperience( value );
+    	p.setLevel( level );
+    	p.setExp( exp );
     	
     	// Set the experience.
-        p.giveExp( value );
+        //p.giveExp( value );
     	
     	// Return the value.
         return value;
+    }
+    public int getExpTolevel(int level) {
+        return 7 + (level * 7 >> 1);
     }
     
     public int getExp (OfflinePlayer p) {
