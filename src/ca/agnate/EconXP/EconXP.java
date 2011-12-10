@@ -32,7 +32,14 @@ public class EconXP extends JavaPlugin {
         permissionOPs.add( Node.ADD );
         permissionOPs.add( Node.SUBTRACT );
         permissionOPs.add( Node.BALANCE );
+        permissionOPs.add( Node.BALANCESELF );
         permissionOPs.add( Node.CLEAR );
+        permissionOPs.add( Node.VERSION );
+        permissionOPs.add( Node.SET );
+        permissionOPs.add( Node.GIVE );
+        permissionOPs.add( Node.TRANSFER );
+        permissionOPs.add( Node.MULTIPLY );
+        permissionOPs.add( Node.DIVIDE );
         
         // Setup config information.
         //config = new Config (this, "config.yml");
