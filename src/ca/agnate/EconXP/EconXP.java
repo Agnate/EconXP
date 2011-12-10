@@ -346,14 +346,20 @@ public class EconXP extends JavaPlugin {
     }
     protected boolean hasSuperPerms(Permissible p, String s) {
         String[] nodes = s.split("\\.");
-
+        
+        // If they have the permission,
+        if ( p.hasPermission(s) ) {
+        	return true;
+        }
+        
+        // Otherwise, check for any parent * nodes.
         String perm = "";
         for (int i = 0; i < nodes.length; i++) {
             perm += nodes[i] + ".";
             if (p.hasPermission(perm + "*"))
                 return true;
         }
-
+        
         return p.hasPermission(s);
     }
 }
