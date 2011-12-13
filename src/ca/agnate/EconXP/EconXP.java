@@ -8,20 +8,21 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.Event.Priority;
+import org.bukkit.event.entity.EntityListener;
 import org.bukkit.permissions.Permissible;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class EconXP extends JavaPlugin {
     
     protected List<Node> permissionOPs;
-    protected Config config;
     protected Server server;
     public OfflineManager offline;
+    public float dropOnDeath;
     
     public void onDisable() {
-        // Save config.
-        //config.saveData();
-        
         // Show disabled message.
         System.out.println("[" + this + "] EconXP is disabled.");
     }
@@ -41,9 +42,6 @@ public class EconXP extends JavaPlugin {
         permissionOPs.add( Node.MULTIPLY );
         permissionOPs.add( Node.DIVIDE );
         
-        // Setup config information.
-        //config = new Config (this, "config.yml");
-        
         // Set plugin defaults.
         offline = new OfflineManager (this);
         
@@ -51,17 +49,21 @@ public class EconXP extends JavaPlugin {
         server = getServer();
         
         // Retrieve the config data.
-        //config.getData();
+        dropOnDeath = (float) Math.min(100, Math.max(0, this.getConfig().getInt("death-drop-percent", 100))) / (float) 100;
         
         // Bind the /econxp, /exp commands to EconXPCommands.
         EconXPCommands commandExecutor = new EconXPCommands (this);
         getCommand("econxp").setExecutor(commandExecutor);
         getCommand("exp").setExecutor(commandExecutor);
         
-        // Set up listeners
-        //PluginManager pm = getServer().getPluginManager();
-        //final PlayerListener playerListener = new EconXPPlayerListener(this);
-        //pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, playerListener, Priority.Lowest, this);
+        // Set up death event checks.
+        PluginManager pm = getServer().getPluginManager();
+        EntityListener entityListener = new EconXPEntityListener(this);
+        pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, Priority.Lowest, this);
+        
+        // Save a default config file.
+        this.getConfig().options().copyDefaults(true);
+        saveConfig();
         
         // Show enabled message.
         System.out.println("[" + this + "] EconXP is enabled.");
@@ -274,6 +276,17 @@ public class EconXP extends JavaPlugin {
     	
     	// Remove exp from giver and add it to receiver, and return how much was given.
     	return addExp( receiver, removeExp(giver, value) );
+    }
+    
+    public int calcDroppedExp (Player player) {
+    	if ( player == null ) { return 0; }
+    	
+    	return (int) Math.ceil((float) getExp(player) * (float) dropOnDeath);
+    }
+    public int calcRemainingExp (Player player) {
+    	if ( player == null ) { return 0; }
+    	
+    	return getExp(player) - calcDroppedExp(player);
     }
     
     public boolean isValidPlayer(String player) {
