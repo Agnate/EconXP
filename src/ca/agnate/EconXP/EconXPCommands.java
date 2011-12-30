@@ -258,7 +258,7 @@ public class EconXPCommands implements CommandExecutor {
         
         OfflinePlayer offTarget = plugin.getOfflinePlayer( player );
         
-        if ( offTarget != null ) {
+        if ( offTarget != null  &&  offTarget.hasPlayedBefore() ) {
         	return offTarget;
         }
         
