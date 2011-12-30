@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.entity.EntityListener;
+import org.bukkit.event.player.PlayerListener;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -59,7 +60,11 @@ public class EconXP extends JavaPlugin {
         // Set up death event checks.
         PluginManager pm = getServer().getPluginManager();
         EntityListener entityListener = new EconXPEntityListener(this);
+        PlayerListener playerListener = new EconXPPlayerListener(this);
+        
         pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, Priority.Lowest, this);
+        pm.registerEvent(Event.Type.PLAYER_RESPAWN, playerListener, Priority.Lowest, this);
+        pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Lowest, this);
         
         // Save a default config file.
         this.getConfig().options().copyDefaults(true);
