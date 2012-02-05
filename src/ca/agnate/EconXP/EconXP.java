@@ -8,12 +8,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.entity.EntityListener;
-import org.bukkit.event.player.PlayerListener;
 import org.bukkit.permissions.Permissible;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class EconXP extends JavaPlugin {
@@ -58,13 +53,7 @@ public class EconXP extends JavaPlugin {
         getCommand("exp").setExecutor(commandExecutor);
         
         // Set up death event checks.
-        PluginManager pm = getServer().getPluginManager();
-        EntityListener entityListener = new EconXPEntityListener(this);
-        PlayerListener playerListener = new EconXPPlayerListener(this);
-        
-        pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, Priority.Lowest, this);
-        pm.registerEvent(Event.Type.PLAYER_RESPAWN, playerListener, Priority.Lowest, this);
-        pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Lowest, this);
+        getServer().getPluginManager().registerEvents(new EconXPListener (this), this);
         
         // Save a default config file.
         this.getConfig().options().copyDefaults(true);
@@ -93,7 +82,7 @@ public class EconXP extends JavaPlugin {
     	if ( p == null ) { return -1; }
         
     	// Lame hacks because of Bukkit bugs.
-    	int level = 0;
+    	/*int level = 0;
     	int total = value;
     	int tnl = getExpTolevel(level);
     	float exp = (float) total / (float) tnl;
@@ -107,16 +96,32 @@ public class EconXP extends JavaPlugin {
     	
     	p.setTotalExperience( value );
     	p.setLevel( level );
-    	p.setExp( exp );
+    	p.setExp( exp );*/
+    	
+    	// Clear current experience.
+    	p.setTotalExperience( 0 );
+    	p.setLevel( 0 );
+    	p.setExp( 0 );
     	
     	// Set the experience.
-        //p.giveExp( value );
+        p.giveExp( value );
     	
     	// Return the value.
         return value;
     }
     public int getExpTolevel(int level) {
         return 7 + (level * 7 >> 1);
+    }
+    
+    public int convertLevelToExp (int level) {
+    	int total = 0;
+    	
+    	while ( level > 0 ) {
+    		total += getExpTolevel( level - 1 );
+    		level--;
+    	}
+    	
+    	return total;
     }
     
     public int getExp (OfflinePlayer p) {
