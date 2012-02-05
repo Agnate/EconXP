@@ -172,10 +172,24 @@ public class EconXPCommands implements CommandExecutor {
             
             // Get the amount.
             int amount = validateAmount( sender, arg2 );
-            if ( amount < 0 ) { return true; }
+            if ( amount <= 0 ) { return true; }
+            
+            // Check if the player actually has that much to give.
+            if ( plugin.hasExp((Player) sender, amount) == false ) {
+            	EconXP.sendMsg( sender, Msg.PLAYER_NOT_ENOUGH_EXP.get(""+amount) );
+            	return true;
+            }
             
             // Transfer the experience from the player to the receiver.
-            EconXP.sendMsg( sender, Msg.PLAYER_GIVE.get(target.getName(), ""+plugin.giveExp((Player) sender, target, amount)) );
+            amount = plugin.giveExp((Player) sender, target, amount);
+            
+            EconXP.sendMsg( sender, Msg.PLAYER_GIVE.get(target.getName(), ""+amount) );
+            
+            // If the receiver is online, send the message.
+            if ( target instanceof Player ) {
+            	EconXP.sendMsg( (Player)target, Msg.PLAYER_RECEIVE.get(sender.getName(), ""+amount) );
+            }
+            
             return true;
         }
         // Command: /econxp transfer <giver> <amount> <receiver>
