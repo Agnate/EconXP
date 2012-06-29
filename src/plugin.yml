@@ -5,7 +5,7 @@ generator: http://dinnerbone.com/minecraft/tools/pluginator/
 main: ca.agnate.EconXP.EconXP
 name: EconXP
 startup: postworld
-version: 0.4.1
+version: 0.4.2
 commands:
     econxp:
         description: Base command for EconXP
