@@ -16,7 +16,7 @@ public class OfflineManager {
     public OfflineManager( EconXP aPlugin ) {
     	plugin = aPlugin;
         dataDir = new File(plugin.getServer().getWorlds().get(0).getWorldFolder(), "players");
-        System.out.println("DIR=" + dataDir.getAbsolutePath());
+        //System.out.println("DIR=" + dataDir.getAbsolutePath());
     }
 	
 	public boolean dataExists(String name) {
