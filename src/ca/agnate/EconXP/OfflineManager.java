@@ -1,17 +1,12 @@
 package ca.agnate.EconXP;
 
+import org.jnbt.*;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
-
-import org.jnbt.CompoundTag;
-import org.jnbt.FloatTag;
-import org.jnbt.IntTag;
-import org.jnbt.NBTInputStream;
-import org.jnbt.NBTOutputStream;
-import org.jnbt.Tag;
 
 public class OfflineManager {
 	
@@ -20,7 +15,8 @@ public class OfflineManager {
 
     public OfflineManager( EconXP aPlugin ) {
     	plugin = aPlugin;
-        dataDir = new File(plugin.getServer().getWorlds().get(0).getName(), "players");
+        dataDir = new File(plugin.getServer().getWorlds().get(0).getWorldFolder(), "players");
+        //System.out.println("DIR=" + dataDir.getAbsolutePath());
     }
 	
 	public boolean dataExists(String name) {
