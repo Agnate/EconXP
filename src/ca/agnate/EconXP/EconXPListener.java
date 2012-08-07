@@ -67,7 +67,7 @@ public class EconXPListener implements Listener {
 		int newTotal = plugin.convertLevelToExp( newLevel );
 		
 		// Add in what's remaining in the bar.
-		newTotal += Math.floor(event.getEnchanter().getExp() * plugin.getExpTolevel( newLevel ));
+		newTotal += Math.floor(event.getEnchanter().getExp() * plugin.getExpToLevel( newLevel ));
 		
 		// Set the experience so that levels are calculated properly.
 		plugin.setExp(event.getEnchanter(), newTotal);

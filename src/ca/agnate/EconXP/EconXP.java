@@ -109,15 +109,15 @@ public class EconXP extends JavaPlugin {
     	// Return the value.
         return value;
     }
-    public int getExpTolevel(int level) {
-        return 7 + (level * 7 >> 1);
+    public int getExpToLevel(int level) {
+        //return 7 + (level * 7 >> 1);
+    	return level >= 30 ? 62 + (level - 30) * 7 : (level >= 15 ? 17 + (level - 15) * 3 : 17);
     }
-    
     public int convertLevelToExp (int level) {
     	int total = 0;
     	
     	while ( level > 0 ) {
-    		total += getExpTolevel( level - 1 );
+    		total += getExpToLevel( level - 1 );
     		level--;
     	}
     	

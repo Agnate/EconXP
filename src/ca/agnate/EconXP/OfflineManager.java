@@ -72,16 +72,19 @@ public class OfflineManager {
             if ( value < 0 ) {
             	value = 0;
             }
+            else if (value > Integer.MAX_VALUE) {
+            	value = Integer.MAX_VALUE;
+            }
             
             int level = 0;
         	int total = value;
-        	int tnl = plugin.getExpTolevel(level);
+        	int tnl = plugin.getExpToLevel(level);
         	float exp = (float) total / (float) tnl;
             
             while (exp >= 1.0F) {
                 level++;
                 total -= tnl;
-                tnl = plugin.getExpTolevel(level);
+                tnl = plugin.getExpToLevel(level);
                 exp = (float) total / (float) tnl;
             }
             
